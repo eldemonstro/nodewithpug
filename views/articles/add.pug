@@ -1,5 +1,16 @@
-extends layout
+extends ../layouts/layout
 
 block content
   h1= title
   p Welcome to #{title}
+  form(method='POST', action='/articles/add')
+    #form-group
+      label Title:
+      input.form-control(name='title', type='text')
+    #form-group
+      label Author:
+      input.form-control(name='author', type='text')
+    #form-group
+      label Body:
+      textarea.form-control(name='body')
+    input.btn.btn-primary(type='submit', value='Submit')
