@@ -14,7 +14,8 @@ router.get('/', function(req, res, next) {
     }
     res.render('index', {
       title: 'Knowledgebase',
-      articles: articles
+      articles: articles,
+      errors: null
     });
   });
 });

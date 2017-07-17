@@ -2,8 +2,7 @@ extends ../layouts/layout
 
 block content
   h1= title
-  p Welcome to #{title}
-  form(method='POST', action='/articles/add')
+  form(method='POST', action='/article/add')
     #form-group
       label Title:
       input.form-control(name='title', type='text')
@@ -13,4 +12,5 @@ block content
     #form-group
       label Body:
       textarea.form-control(name='body')
+    br
     input.btn.btn-primary(type='submit', value='Submit')

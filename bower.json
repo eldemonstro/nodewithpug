@@ -1,0 +1,22 @@
+{
+  "name": "nodekb",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Fabricio Bezerra <demonstro003@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}

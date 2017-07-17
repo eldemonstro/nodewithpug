@@ -18,12 +18,21 @@ html
             li
               a(href='/') Home
             li
-              a(href='/articles/add') Add Article
+              a(href='/article/add') Add Article
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href='/user/login') Login 
+            li
+              a(href='/user/register') Register
     .container
+      != messages('layouts/message', locals)
+      if errors
+        each error, i in errors
+          div(class="alert alert-danger") #{error.msg}
       block content
       br
       hr
       footer
         p Copyright &copy; 2017
-    script(src='/bower_components/bootstrap/dist/js/bootstrap.min.css')
-    script(src='/bower_components/jquery/dist/jquery.min.css')
+    script(src='/bower_components/jquery/dist/jquery.min.js')
+    script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
