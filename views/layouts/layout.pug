@@ -3,6 +3,7 @@ html
   head
     title= title
     link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
   body
     nav.navbar.navbar-inverse
       .container
@@ -17,13 +18,18 @@ html
           ul.nav.navbar-nav
             li
               a(href='/') Home
-            li
-              a(href='/article/add') Add Article
+            if user
+              li
+                a(href='/article/add') Add Article
           ul.nav.navbar-nav.navbar-right
-            li
-              a(href='/user/login') Login 
-            li
-              a(href='/user/register') Register
+            if user
+              li 
+                a(href='/user/logout') Logout
+            else
+              li
+                a(href='/user/login') Login 
+              li
+                a(href='/user/register') Register
     .container
       != messages('layouts/message', locals)
       if errors

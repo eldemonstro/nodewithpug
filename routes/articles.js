@@ -4,9 +4,20 @@ const util = require('util');
 
 let router = express.Router();
 let Article = require('../models/article');
+let User = require('../models/user');
+
+// Accesss control
+let ensureAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    req.flash('danger', 'Please login');
+    res.redirect('/user/login');
+  }
+}
 
 /* GET add article page. */
-router.get('/add', function(req, res, next) {
+router.get('/add', ensureAuthenticated, function(req, res, next) {
   res.render('articles/add', {
     title: 'Add Article',
     errors: null
@@ -14,10 +25,10 @@ router.get('/add', function(req, res, next) {
 });
 
 /* POST add article */
-router.post('/add', function(req, res, next) {
+router.post('/add', ensureAuthenticated, function(req, res, next) {
   // Validating
   req.assert('title', 'Title is required').notEmpty();
-  req.assert('author', 'Author is required').notEmpty();
+  //req.assert('author', 'Author is required').notEmpty();
   req.assert('body', 'Body is required').notEmpty();
 
   req.getValidationResult().then(function(result) {
@@ -32,7 +43,7 @@ router.post('/add', function(req, res, next) {
 
     let article = new Article({
       title: req.body.title,
-      author: req.body.author,
+      author: req.user._id,
       body: req.body.body
     });
 
@@ -51,16 +62,27 @@ router.post('/add', function(req, res, next) {
 // Get single article
 router.get('/:id', function(req, res) {
   Article.findById(req.params.id, (err, article) => {
-    res.render('articles/article', {
-      article: article,
-      errors: null
+    if (article.author != req.user._id) {
+      req.flash('danger', 'Not Authorized');
+      res.redirect('/');
+    }
+    User.findById(article.author, (err, user) => {
+      res.render('articles/article', {
+        article: article,
+        author: user.name,
+        errors: null
+      });
     });
   });
 });
 
 // Get single article
-router.get('/edit/:id', function(req, res) {
+router.get('/edit/:id', ensureAuthenticated, function(req, res) {
   Article.findById(req.params.id, (err, article) => {
+    if (article.author != req.user._id) {
+      req.flash('danger', 'Not Authorized');
+      res.redirect('/');
+    }
     res.render('articles/edit', {
       title: 'Edit a article',
       article: article,
@@ -70,7 +92,7 @@ router.get('/edit/:id', function(req, res) {
 });
 
 // Update submit
-router.post('/edit/:id', function(req, res, next) {
+router.post('/edit/:id', ensureAuthenticated, function(req, res, next) {
   // Validating
   req.assert('title', 'Title is required').notEmpty();
   req.assert('author', 'Author is required').notEmpty();
@@ -109,7 +131,7 @@ router.post('/edit/:id', function(req, res, next) {
   });
 });
 
-router.post('/delete/:id', function(req, res, next) {
+router.post('/delete/:id', ensureAuthenticated, function(req, res, next) {
   let query = {
     _id: req.params.id
   };

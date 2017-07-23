@@ -5,27 +5,14 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const mongoose = require('mongoose');
+require('./config/database')('localhost/meanforum');
 const session = require('express-session');
 const expressValidator = require('express-validator');
+const passport = require('passport');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
 const articles = require('./routes/articles');
-
-// Connect to the database
-mongoose.connect('mongodb://localhost/nodekb');
-let db = mongoose.connection;
-
-// Check connection
-db.once('open', () => {
-  console.log('Connected to MongoDB');
-});
-
-// Check for DB erros
-db.on('error', (err) => {
-  console.error(err);
-});
 
 // init express app
 var app = express();
@@ -79,6 +66,18 @@ app.use(expressValidator({
     };
   }
 }));
+
+// Passport config
+require('./config/passport')(passport);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('*', function(req, res, next) {
+  res.locals.user = req.user || null;
+  next();
+});
 
 // Routes
 app.use('/', index);

@@ -2,9 +2,11 @@ extends ../layouts/layout
 
 block content
   h1= article.title
-  small Written by #{article.author}
+  small Written by #{author}
   p= article.body
   hr
-  a.btn.btn-default(href='/article/edit/'+article._id) Edit
-  form.pull-right(method='POST', action='/article/delete/'+article._id)
-    input.btn.btn-danger(type='submit', value='Delete')
+  if user
+    if user.id == article.author
+      a.btn.btn-default(href='/article/edit/'+article._id) Edit
+      form.pull-right(method='POST', action='/article/delete/'+article._id)
+        input.btn.btn-danger(type='submit', value='Delete')
