@@ -135,6 +135,18 @@ router.post('/delete/:id', ensureAuthenticated, function(req, res, next) {
   let query = {
     _id: req.params.id
   };
+  if (!req.user._id) {
+    res.status(500).send();
+    return;
+  }
+
+  Article.findById(req.params.id, (err, article) => {
+    if (article.author != req.user._id) {
+      res.status(500).send();
+      return;
+    }
+  });
+
   Article.remove(query, function(err) {
     if (err) {
       console.error(err);
